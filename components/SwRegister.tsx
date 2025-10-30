@@ -6,7 +6,7 @@ export default function SwRegister() {
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
       const register = async () => {
         try {
-          const reg = await navigator.serviceWorker.register('/sw.js');
+          const reg = await navigator.serviceWorker.register('/sw-1-1-1.js');
           reg.onupdatefound = () => {
             const installingWorker = reg.installing;
             if (installingWorker) {
