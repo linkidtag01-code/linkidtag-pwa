@@ -1,4 +1,4 @@
-import './globals.css';
+import '../styles/globals.css';
 import SwRegister from '../components/SwRegister';
 
 export const metadata = {
