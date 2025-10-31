@@ -1,16 +1,12 @@
-'use client'; // Esto marca el archivo como un componente de cliente
+'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';  // Importamos los componentes de Leaflet
-import 'leaflet/dist/leaflet.css';  // Importamos los estilos de Leaflet
 
-// Ficha de Identificación
 export default function TagProfile({ params }: { params: { id: string } }) {
   const id = decodeURIComponent(params.id || '');
   const isDemo = id.toLowerCase() === 'demo';
 
-  // Datos demo
   const demo = {
     name: 'Milo',
     species: 'Canino',
@@ -21,7 +17,6 @@ export default function TagProfile({ params }: { params: { id: string } }) {
     notes: 'Amigable. Usa collar celeste.',
   };
 
-  // Bitácora de escaneos
   const [scans, setScans] = useState<string[]>([]);
   const [lat, setLat] = useState<number | null>(null);
   const [lng, setLng] = useState<number | null>(null);
@@ -29,26 +24,21 @@ export default function TagProfile({ params }: { params: { id: string } }) {
   const handleScan = () => {
     const timestamp = new Date().toLocaleString();
 
-    // Obtener ubicación del escaneo
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
           setLat(latitude);
           setLng(longitude);
-          const location = `Lat: ${latitude}, Long: ${longitude}`;
-          setScans([
-            ...scans,
-            `Escaneo registrado en: ${timestamp} - Ubicación: ${location}`,
+          setScans((prev) => [
+            ...prev,
+            `Escaneo: ${timestamp} — Lat: ${latitude}, Long: ${longitude}`,
           ]);
         },
-        (error) => {
-          console.log(error);
-          setScans([...scans, `Escaneo registrado en: ${timestamp} - Ubicación desconocida`]);
-        }
+        () => setScans((prev) => [...prev, `Escaneo: ${timestamp} — Ubicación desconocida`])
       );
     } else {
-      setScans([...scans, `Escaneo registrado en: ${timestamp} - Ubicación no disponible`]);
+      setScans((prev) => [...prev, `Escaneo: ${timestamp} — Ubicación no disponible`]);
     }
   };
 
@@ -66,7 +56,7 @@ export default function TagProfile({ params }: { params: { id: string } }) {
         <div className="card">
           <h3>¿Eres el dueño?</h3>
           <p>Conecta esta placa a tu perfil para mostrar datos de contacto al escanear.</p>
-          <p className="muted">Prueba la versión de ejemplo: <Link href="/tag/demo">/tag/demo</Link></p>
+          <p className="muted">Prueba la demo: <Link href="/tag/demo">/tag/demo</Link></p>
         </div>
       </div>
     </main>
@@ -74,12 +64,11 @@ export default function TagProfile({ params }: { params: { id: string } }) {
 
   if (!isDemo) return <NotActivated />;
 
-  // Modo perdido
   const [isLostMode, setIsLostMode] = useState(false);
+  const handleLostMode = () => setIsLostMode((s) => !s);
 
-  const handleLostMode = () => {
-    setIsLostMode(!isLostMode);
-  };
+  const mapUrl =
+    lat && lng ? `https://www.google.com/maps?q=${lat},${lng}&z=15&output=embed` : null;
 
   return (
     <main>
@@ -93,29 +82,24 @@ export default function TagProfile({ params }: { params: { id: string } }) {
           <p><strong>Contacto:</strong> {demo.owner} — {demo.phone}</p>
           <p><strong>Notas:</strong> {demo.notes}</p>
 
-          {/* Modo Perdido */}
           <button className="btn" onClick={handleLostMode}>
-            {isLostMode ? "Desactivar Modo Perdido" : "Activar Modo Perdido"}
+            {isLostMode ? 'Desactivar Modo Perdido' : 'Activar Modo Perdido'}
           </button>
+
           {isLostMode && (
             <div className="lost-info" style={{ marginTop: 20 }}>
               <h3>¡Placa en Modo Perdido!</h3>
               <p>Contacta a: +503 7000 0000 (Óscar)</p>
-              <p><strong>Nota:</strong> "¡Encontrado, por favor, contacta ahora!"</p>
+              <p><strong>Nota:</strong> "¡Encontrado, por favor contacta ahora!"</p>
             </div>
           )}
 
-          {/* Bitácora de Escaneos */}
           <div style={{ marginTop: 30 }}>
             <h3>Bitácora de escaneos</h3>
             <button className="btn" onClick={handleScan}>Registrar escaneo</button>
-            <div style={{ marginTop: '20px' }}>
-              <h4>Historial de escaneos:</h4>
-              <ul>
-                {scans.map((scan, index) => (
-                  <li key={index}>{scan}</li>
-                ))}
-              </ul>
+            <div style={{ marginTop: 20 }}>
+              <h4>Historial:</h4>
+              <ul>{scans.map((s, i) => <li key={i}>{s}</li>)}</ul>
             </div>
           </div>
 
@@ -123,23 +107,28 @@ export default function TagProfile({ params }: { params: { id: string } }) {
             <Link className="btn" href="/">Inicio</Link>
           </div>
         </div>
+
         <div className="card">
           <h3>¿Qué es esto?</h3>
-          <p>Quien escanee la placa verá esta ficha con datos del dueño para contacto inmediato.</p>
+          <p>Quien escanee la placa verá esta ficha y podrá contactarte.</p>
           <p className="muted">Demo usando ID: <code>{id}</code></p>
         </div>
       </div>
 
-      {/* Mapa de ubicación */}
-      {lat && lng && (
+      {mapUrl && (
         <div style={{ marginTop: 20 }}>
-          <h4>Ubicación del último escaneo:</h4>
-          <MapContainer center={[lat, lng]} zoom={13} style={{ width: '100%', height: '400px' }}>
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            <Marker position={[lat, lng]}>
-              <Popup>Escaneo realizado en {lat}, {lng}</Popup>
-            </Marker>
-          </MapContainer>
+          <h4>Ubicación del último escaneo</h4>
+          <div style={{ width: '100%', height: 400, borderRadius: 12, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,.08)' }}>
+            <iframe
+              title="map"
+              src={mapUrl}
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
         </div>
       )}
     </main>
