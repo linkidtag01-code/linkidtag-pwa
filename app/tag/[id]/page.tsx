@@ -1,3 +1,5 @@
+'use client'; // Esto marca el archivo como un componente de cliente
+
 import { useState } from 'react';
 import Link from 'next/link';
 
