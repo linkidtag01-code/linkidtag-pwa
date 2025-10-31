@@ -1,5 +1,5 @@
 // Simple service worker for Linkidtag PWA
-const VERSION = 'v1.3.1';
+const VERSION = 'v1.3.3';
 const APP_SHELL = [
   '/',
   '/offline.html',
