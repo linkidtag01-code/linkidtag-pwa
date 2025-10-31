@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import Link from 'next/link';
 
+// Ficha de Identificación
 export default function TagProfile({ params }: { params: { id: string } }) {
   const id = decodeURIComponent(params.id || '');
   const isDemo = id.toLowerCase() === 'demo';
 
-  // Datos demo para mostrar cómo se ve una placa activada
+  // Datos demo
   const demo = {
     name: 'Milo',
     species: 'Canino',
@@ -12,10 +14,16 @@ export default function TagProfile({ params }: { params: { id: string } }) {
     color: 'Blanco y café',
     owner: 'Óscar',
     phone: '+503 7000 0000',
-    notes: 'Amigable. Usa collar celeste.'
+    notes: 'Amigable. Usa collar celeste.',
   };
 
-  // Vista cuando la placa NO está activada
+  // Bitácora de escaneos
+  const [scans, setScans] = useState<string[]>([]);
+  const handleScan = () => {
+    const timestamp = new Date().toLocaleString();
+    setScans([...scans, `Escaneo registrado en: ${timestamp}`]);
+  };
+
   const NotActivated = () => (
     <main>
       <div className="grid">
@@ -38,7 +46,13 @@ export default function TagProfile({ params }: { params: { id: string } }) {
 
   if (!isDemo) return <NotActivated />;
 
-  // Vista DEMO (placa activada)
+  // Modo perdido
+  const [isLostMode, setIsLostMode] = useState(false);
+
+  const handleLostMode = () => {
+    setIsLostMode(!isLostMode);
+  };
+
   return (
     <main>
       <div className="grid">
@@ -50,6 +64,33 @@ export default function TagProfile({ params }: { params: { id: string } }) {
           <p><strong>Color:</strong> {demo.color}</p>
           <p><strong>Contacto:</strong> {demo.owner} — {demo.phone}</p>
           <p><strong>Notas:</strong> {demo.notes}</p>
+
+          {/* Modo Perdido */}
+          <button className="btn" onClick={handleLostMode}>
+            {isLostMode ? "Desactivar Modo Perdido" : "Activar Modo Perdido"}
+          </button>
+          {isLostMode && (
+            <div className="lost-info" style={{ marginTop: 20 }}>
+              <h3>¡Placa en Modo Perdido!</h3>
+              <p>Contacta a: +503 7000 0000 (Óscar)</p>
+              <p><strong>Nota:</strong> "¡Encontrado, por favor, contacta ahora!"</p>
+            </div>
+          )}
+
+          {/* Bitácora de Escaneos */}
+          <div style={{ marginTop: 30 }}>
+            <h3>Bitácora de escaneos</h3>
+            <button className="btn" onClick={handleScan}>Registrar escaneo</button>
+            <div style={{ marginTop: '20px' }}>
+              <h4>Historial de escaneos:</h4>
+              <ul>
+                {scans.map((scan, index) => (
+                  <li key={index}>{scan}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
           <div className="actions" style={{ marginTop: 12 }}>
             <Link className="btn" href="/">Inicio</Link>
           </div>
