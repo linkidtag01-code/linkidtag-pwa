@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "next": "14.2.5", 
-    "react": "18.2.0",   // Asegúrate de que React sea 18.2.0
-    "react-dom": "18.2.0", // Asegúrate de que React DOM sea también 18.2.0
+    "react": "18.2.0",   
+    "react-dom": "18.2.0", 
     "react-leaflet": "^3.2.5",
     "leaflet": "^1.9.4"
   },
