@@ -21,9 +21,33 @@ export default function TagProfile({ params }: { params: { id: string } }) {
 
   // Bitácora de escaneos
   const [scans, setScans] = useState<string[]>([]);
+  const [lat, setLat] = useState<number | null>(null);
+  const [lng, setLng] = useState<number | null>(null);
+
   const handleScan = () => {
     const timestamp = new Date().toLocaleString();
-    setScans([...scans, `Escaneo registrado en: ${timestamp}`]);
+
+    // Obtener ubicación del escaneo
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLat(latitude);
+          setLng(longitude);
+          const location = `Lat: ${latitude}, Long: ${longitude}`;
+          setScans([
+            ...scans,
+            `Escaneo registrado en: ${timestamp} - Ubicación: ${location}`,
+          ]);
+        },
+        (error) => {
+          console.log(error);
+          setScans([...scans, `Escaneo registrado en: ${timestamp} - Ubicación desconocida`]);
+        }
+      );
+    } else {
+      setScans([...scans, `Escaneo registrado en: ${timestamp} - Ubicación no disponible`]);
+    }
   };
 
   const NotActivated = () => (
@@ -103,6 +127,19 @@ export default function TagProfile({ params }: { params: { id: string } }) {
           <p className="muted">Demo usando ID: <code>{id}</code></p>
         </div>
       </div>
+
+      {/* Mapa de ubicación */}
+      {lat && lng && (
+        <div style={{ marginTop: 20 }}>
+          <h4>Ubicación del último escaneo:</h4>
+          <MapContainer center={[lat, lng]} zoom={13} style={{ width: '100%', height: '400px' }}>
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            <Marker position={[lat, lng]}>
+              <Popup>Escaneo realizado en {lat}, {lng}</Popup>
+            </Marker>
+          </MapContainer>
+        </div>
+      )}
     </main>
   );
 }
