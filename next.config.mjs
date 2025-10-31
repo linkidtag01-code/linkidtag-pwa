@@ -1,10 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+
   async headers() {
     return [
       {
-        // SW legacy
         source: '/sw.js',
         headers: [
           { key: 'Cache-Control', value: 'no-cache, no-store, must-revalidate' },
@@ -12,7 +12,6 @@ const nextConfig = {
         ],
       },
       {
-        // SW nuevo
         source: '/sw-1-1-1.js',
         headers: [
           { key: 'Cache-Control', value: 'no-cache, no-store, must-revalidate' },
@@ -20,11 +19,17 @@ const nextConfig = {
         ],
       },
       {
-        // Manifest
         source: '/manifest.webmanifest',
         headers: [{ key: 'Content-Type', value: 'application/manifest+json' }],
       },
     ];
   },
+
+  async rewrites() {
+    return [
+      { source: '/t/:serial*', destination: '/tag/:serial*' }, // URL corta para placas
+    ];
+  },
 };
+
 export default nextConfig;
