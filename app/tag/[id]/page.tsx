@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';  // Importamos los componentes de Leaflet
-import 'leaflet/dist/leaflet.css';  // Importamos el estilo de Leaflet
+import 'leaflet/dist/leaflet.css';  // Importamos los estilos de Leaflet
 
 // Ficha de Identificación
 export default function TagProfile({ params }: { params: { id: string } }) {
