@@ -8,11 +8,11 @@
     "start": "next start -p 3000"
   },
   "dependencies": {
-    "next": "14.2.5",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "leaflet": "^1.9.4",
-    "react-leaflet": "^3.2.1"
+    "next": "14.2.5", 
+    "react": "18.2.0",   // Asegúrate de que React sea 18.2.0
+    "react-dom": "18.2.0", // Asegúrate de que React DOM sea también 18.2.0
+    "react-leaflet": "^3.2.5",
+    "leaflet": "^1.9.4"
   },
   "devDependencies": {
     "typescript": "^5.6.3",
