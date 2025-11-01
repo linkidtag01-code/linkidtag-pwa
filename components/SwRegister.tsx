@@ -1,28 +1,34 @@
+// components/SwRegister.tsx
 'use client';
+
 import { useEffect } from 'react';
 
 export default function SwRegister() {
   useEffect(() => {
-    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-      const register = async () => {
-        try {
-          const reg = await navigator.serviceWorker.register('/sw-1-1-1.js');
-          reg.onupdatefound = () => {
-            const installingWorker = reg.installing;
-            if (installingWorker) {
-              installingWorker.onstatechange = () => {
-                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  console.log('New content is available; please refresh.');
-                }
-              };
+    if (typeof window === 'undefined') return;
+    if (!('serviceWorker' in navigator)) return;
+
+    const register = async () => {
+      try {
+        const reg = await navigator.serviceWorker.register('/sw.js');
+        // Opcional: escucha updates
+        reg.onupdatefound = () => {
+          const installing = reg.installing;
+          if (!installing) return;
+          installing.onstatechange = () => {
+            if (installing.state === 'installed') {
+              // Si hay nueva versión, avisa o recarga
+              // console.log('SW actualizado. Recarga para obtener la nueva versión.');
             }
           };
-        } catch (e) {
-          console.error('SW registration failed', e);
-        }
-      };
-      register();
-    }
+        };
+      } catch (e) {
+        console.error('SW register failed', e);
+      }
+    };
+
+    register();
   }, []);
+
   return null;
 }
