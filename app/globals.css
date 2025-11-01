@@ -87,7 +87,7 @@ code{
 .btn:active{ transform: translateY(1px); }
 .btn[disabled]{ opacity:.6; pointer-events:none; }
 
-/* Primario = Rojo de marca (para acciones principales) */
+/* Primario = Rojo de marca (acciones principales) */
 .btn-primary{
   background: var(--brand-red);
   border-color: var(--brand-red);
@@ -96,18 +96,15 @@ code{
 .btn-primary:hover{ filter: brightness(0.95); }
 .btn-primary:focus{ box-shadow:0 0 0 3px rgba(255,1,12,.35); }
 
-/* Atención (modo perdido): borde rojo, fondo transparente, hover rojo */
+/* Modo Perdido = Rojo sólido */
 .btn-warning{
-  background: transparent;
-  color: var(--brand-red);
-  border-color: var(--brand-red);
-}
-.btn-warning:hover{
   background: var(--brand-red);
+  border-color: var(--brand-red);
   color: var(--brand-white);
 }
+.btn-warning:hover{ filter: brightness(0.95); }
 
-/* Outline neutro (enlaces secundarios: Maps, Waze, Inicio) */
+/* Outline (enlaces secundarios: Maps, Waze, Inicio) */
 .btn-outline{
   background: transparent;
   color: var(--brand-white);
@@ -125,14 +122,52 @@ code{
 }
 .btn-invert:hover{ filter: brightness(0.96); }
 
-/* WhatsApp (verde reconocible).
-   Si prefieres todo en rojo de marca, comenta este bloque y usa el alternativo de abajo. */
+/* WhatsApp – verde oficial */
 .btn-wa{
   background:#25D366; border-color:#1ebe5d; color:#042c17;
 }
 .btn-wa:hover{ background:#1ebe5d; border-color:#19ac55; color:#FFFFFF; }
 
-/* --- Alternativa WA en rojo de marca ---
-.btn-wa{ background: var(--brand-red); border-color: var(--brand-red); color: var(--brand-white); }
+/* ===== Mejoras UX Linkidtag (no rompen nada) ===== */
+
+/* Header pegajoso (marca + accesos) */
+.site-header{
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(17,24,39,.78);            /* #111827 con transparencia */
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--brand-border);
+}
+.site-header .wrap{
+  max-width: 960px; margin: 0 auto;
+  padding: 10px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.brand{
+  color: var(--brand-white);
+  font-weight: 800; letter-spacing: .4px;
+  text-decoration: none;
+}
+.nav{ display: flex; gap: 8px; }
+.nav-link{
+  color: var(--brand-text); text-decoration: none;
+  padding: 6px 10px; border-radius: 10px; border: 1px solid transparent;
+}
+.nav-link:hover{ background: rgba(255,255,255,.06); }
+
+/* Botones: estados active/hover más claros */
+.btn{ transition: transform .16s ease, filter .16s ease, background-color .16s ease; }
+.btn:active{ transform: translateY(1px); }
+.btn-primary:hover,
+.btn-warning:hover,
 .btn-wa:hover{ filter: brightness(0.95); }
-*/
+
+/* Botones 100% ancho en pantallas pequeñas */
+@media (max-width: 520px){
+  .btn{ width: 100%; justify-content: center; }
+  .actions{ display: grid; grid-template-columns: 1fr; gap: 10px; }
+}
+
+/* Tarjetas un poco más “levitadas” en desktop */
+@media (min-width: 768px){
+  .card{ box-shadow: 0 10px 30px rgba(0,0,0,.28); }
+}
