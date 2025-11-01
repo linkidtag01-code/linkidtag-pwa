@@ -10,15 +10,22 @@ export default function SwRegister() {
 
     const register = async () => {
       try {
-        const reg = await navigator.serviceWorker.register('/sw.js');
-        // Opcional: escucha updates
+        // Nueva URL (distinta a la anterior) para forzar registro
+        const reg = await navigator.serviceWorker.register('/sw.js?v=3', { scope: '/' });
+
+        // Intentar update inmediato
+        try { await reg.update(); } catch {}
+
+        // Cuando haya update, tomar control
         reg.onupdatefound = () => {
           const installing = reg.installing;
           if (!installing) return;
           installing.onstatechange = () => {
             if (installing.state === 'installed') {
-              // Si hay nueva versión, avisa o recarga
-              // console.log('SW actualizado. Recarga para obtener la nueva versión.');
+              // Opcional: recargar automáticamente
+              // window.location.reload();
+              // O muestra un aviso al usuario para recargar
+              // console.log('Nueva versión disponible. Recarga la app.');
             }
           };
         };
