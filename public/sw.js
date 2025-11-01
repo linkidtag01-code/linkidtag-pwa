@@ -1,1 +1,1 @@
-/* Bridge para clientes antiguos */ importScripts('/sw-1-1-1.js');
+/* Bridge para clientes antiguos */ importScripts('/sw-1-1-2.js');
