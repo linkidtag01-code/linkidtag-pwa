@@ -1,26 +1,35 @@
-import '../styles/globals.css';
+// app/layout.tsx
+import './globals.css';
+import type { Metadata, Viewport } from 'next';
 import SwRegister from '../components/SwRegister';
 
-export const metadata = {
-  title: 'Linkidtag',
+export const metadata: Metadata = {
+  title: { default: 'Linkidtag', template: '%s • Linkidtag' },
   description: 'PWA de Linkidtag',
+  applicationName: 'Linkidtag',
   manifest: '/manifest.webmanifest',
+  themeColor: '#111827',
+  icons: {
+    icon: '/favicon.ico',                         // en /public/favicon.ico
+    apple: '/icons/apple-touch-icon.png',        // en /public/icons/apple-touch-icon.png
+  },
+};
+
+export const viewport: Viewport = {
   themeColor: '#111827',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="es">
-      <head>
-        <link rel="manifest" href="/manifest.webmanifest" />
-        <meta name="theme-color" content="#111827" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
-      </head>
       <body>
-        <SwRegister />
         {children}
+        {/* Registro del Service Worker para la PWA */}
+        <SwRegister />
       </body>
     </html>
   );
